@@ -25,7 +25,7 @@ impl<'a> Parser<'a> {
         };
 
         let chr = self.data.peek()?;
-        if *chr == ':' && message.prefix.len() == 0 {
+        if *chr == ':' {
             if let Some(prefix) = self.parse_prefix() {
                 message.prefix = prefix;
             } else {
@@ -33,18 +33,14 @@ impl<'a> Parser<'a> {
             }
         }
 
-        if message.command.len() == 0 {
-            if let Some(command) = self.parse_command() {
-                message.command = command;
-            } else {
-                return None;
-            }
+        if let Some(command) = self.parse_command() {
+            message.command = command;
+        } else {
+            return None;
         }
 
         if let Some(params) = self.parse_params() {
             message.params = params;
-        } else {
-            return None;
         }
 
         Some(message)
