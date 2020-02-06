@@ -26,11 +26,7 @@ impl<'a> Parser<'a> {
 
         let chr = self.data.peek()?;
         if *chr == ':' {
-            if let Some(prefix) = self.parse_prefix() {
-                message.prefix = prefix;
-            } else {
-                return None;
-            }
+            message.prefix = self.parse_prefix();
         }
 
         if let Some(command) = self.parse_command() {
@@ -46,8 +42,15 @@ impl<'a> Parser<'a> {
         Some(message)
     }
 
-    fn parse_prefix(&mut self) -> Option<String> {
-        None
+    fn parse_prefix(&mut self) -> String {
+        // Skip the colon character
+        self.data.next();
+
+        return self
+            .data
+            .by_ref()
+            .take_while(|c| *c != ' ')
+            .collect::<String>();
     }
 
     fn parse_command(&mut self) -> Option<String> {
