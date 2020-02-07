@@ -19,7 +19,7 @@ pub struct Parser<'a> {
 impl<'a> Parser<'a> {
     pub fn new(line: &str) -> Parser {
         Parser {
-            data: line.chars().peekable(),
+            data: line.trim_end_matches("\r\n").chars().peekable(),
         }
     }
 
