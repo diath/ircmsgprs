@@ -1,3 +1,4 @@
+use std::fmt;
 use std::iter::Peekable;
 use std::str::Chars;
 use std::vec::Vec;
@@ -10,6 +11,31 @@ pub struct Message {
     pub host: Option<String>,
     pub command: String,
     pub params: Vec<String>,
+}
+
+impl fmt::Display for Message {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        if self.server.is_some() {
+            write!(f, "Server: {} ", self.server.as_ref().unwrap())?;
+        } else if self.nick.is_some() {
+            if self.user.is_some() {
+                write!(
+                    f,
+                    "User: {}!{}",
+                    self.nick.as_ref().unwrap(),
+                    self.user.as_ref().unwrap()
+                )?;
+            } else {
+                write!(f, "User: {}", self.nick.as_ref().unwrap())?;
+            }
+
+            if self.host.is_some() {
+                write!(f, "@{}, ", self.host.as_ref().unwrap())?;
+            }
+        }
+
+        write!(f, "Command: {}, Params: {:?}", self.command, self.params)
+    }
 }
 
 pub struct Parser<'a> {
