@@ -85,12 +85,10 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_prefix(&mut self) -> String {
-        // Skip the colon character
-        self.data.next();
-
         return self
             .data
             .by_ref()
+            .skip(1)
             .take_while(|c| *c != ' ')
             .collect::<String>();
     }
