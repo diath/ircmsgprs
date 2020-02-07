@@ -1,9 +1,9 @@
 [package]
 name = "ircmsgprs"
+description = "A simple library for parsing IRC protocol messages."
 version = "0.1.0"
-authors = ["Kamil Chojnowski <contact@diath.net>"]
+authors = ["Kamil Chojnowski <Y29udGFjdEBkaWF0aC5uZXQ=>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
+repository = "https://github.com/diath/ircmsgprs"
+keywords = ["irc", "parser"]
+license = "MIT"
