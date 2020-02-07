@@ -63,7 +63,7 @@ impl<'a> Parser<'a> {
                 if name.find('!').is_some() {
                     let mut inner_chunks = name.split('!');
                     message.nick = Some(inner_chunks.nth(0).unwrap().to_string());
-                    message.host = Some(inner_chunks.nth(0).unwrap().to_string());
+                    message.user = Some(inner_chunks.nth(0).unwrap().to_string());
                 } else {
                     message.nick = Some(name);
                 }
