@@ -4,7 +4,10 @@ use std::vec::Vec;
 
 #[derive(Default)]
 pub struct Message {
-    pub prefix: String,
+    pub server: Option<String>,
+    pub nick: Option<String>,
+    pub user: Option<String>,
+    pub host: Option<String>,
     pub command: String,
     pub params: Vec<String>,
 }
@@ -27,7 +30,22 @@ impl<'a> Parser<'a> {
 
         let chr = self.data.peek()?;
         if *chr == ':' {
-            message.prefix = self.parse_prefix();
+            let prefix = self.parse_prefix();
+            if prefix.find('@').is_some() {
+                let mut chunks = prefix.split('@');
+                let name = chunks.nth(0).unwrap().to_string();
+                if name.find('!').is_some() {
+                    let mut inner_chunks = name.split('!');
+                    message.nick = Some(inner_chunks.nth(0).unwrap().to_string());
+                    message.host = Some(inner_chunks.nth(0).unwrap().to_string());
+                } else {
+                    message.nick = Some(name);
+                }
+
+                message.host = Some(chunks.nth(0).unwrap().to_string());
+            } else {
+                message.server = Some(prefix);
+            }
         }
 
         if let Some(command) = self.parse_command() {
