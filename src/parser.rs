@@ -3,7 +3,7 @@ use std::iter::Peekable;
 use std::str::Chars;
 use std::vec::Vec;
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct Message {
     pub server: Option<String>,
     pub nick: Option<String>,
