@@ -13,6 +13,15 @@ pub struct Message {
 }
 ```
 
+# Usage
+```Rust
+let mut parser = parser::Parser::new();
+let result = parser
+    .parse(":nick!user@host COMMAND param1 param2 :trailing param with spaces")
+    .unwrap();
+println!("{}", result);
+```
+
 # License
 
 Licensed under the MIT license. See the [license file](LICENSE.md) for details.
