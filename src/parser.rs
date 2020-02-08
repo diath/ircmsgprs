@@ -38,25 +38,22 @@ impl fmt::Display for Message {
     }
 }
 
-pub struct Parser<'a> {
-    data: Peekable<Chars<'a>>,
-}
+pub struct Parser;
 
-impl<'a> Parser<'a> {
-    pub fn new(line: &str) -> Parser {
-        Parser {
-            data: line.trim_end_matches("\r\n").chars().peekable(),
-        }
+impl Parser {
+    pub fn new() -> Parser {
+        Parser {}
     }
 
-    pub fn parse(&mut self) -> Option<Message> {
+    pub fn parse(&mut self, line: &str) -> Option<Message> {
+        let mut data = line.trim_end_matches("\r\n").chars().peekable();
         let mut message = Message {
             ..Default::default()
         };
 
-        let chr = self.data.peek()?;
+        let chr = data.peek()?;
         if *chr == ':' {
-            let prefix = self.parse_prefix();
+            let prefix = self.parse_prefix(&mut data);
             if prefix.find('@').is_some() {
                 let mut chunks = prefix.split('@');
                 let name = chunks.nth(0).unwrap().to_string();
@@ -74,30 +71,28 @@ impl<'a> Parser<'a> {
             }
         }
 
-        if let Some(command) = self.parse_command() {
+        if let Some(command) = self.parse_command(&mut data) {
             message.command = command;
         } else {
             return None;
         }
 
-        message.params = self.parse_params();
+        message.params = self.parse_params(&mut data);
         Some(message)
     }
 
-    fn parse_prefix(&mut self) -> String {
-        return self
-            .data
+    fn parse_prefix(&mut self, data: &mut Peekable<Chars>) -> String {
+        return data
             .by_ref()
             .skip(1)
             .take_while(|c| *c != ' ')
             .collect::<String>();
     }
 
-    fn parse_command(&mut self) -> Option<String> {
-        let chr = self.data.peek()?;
+    fn parse_command(&mut self, data: &mut Peekable<Chars>) -> Option<String> {
+        let chr = data.peek()?;
         if chr.is_numeric() {
-            let numeric = self
-                .data
+            let numeric = data
                 .by_ref()
                 .take_while(|c| c.is_numeric())
                 .collect::<String>();
@@ -109,27 +104,17 @@ impl<'a> Parser<'a> {
 
             return None;
         } else {
-            return Some(
-                self.data
-                    .by_ref()
-                    .take_while(|c| *c != ' ')
-                    .collect::<String>(),
-            );
+            return Some(data.by_ref().take_while(|c| *c != ' ').collect::<String>());
         }
     }
 
-    fn parse_params(&mut self) -> Vec<String> {
+    fn parse_params(&mut self, data: &mut Peekable<Chars>) -> Vec<String> {
         let mut params = Vec::new();
-        while let Some(chr) = self.data.peek() {
+        while let Some(chr) = data.peek() {
             if *chr == ':' {
-                params.push(self.data.by_ref().skip(1).collect::<String>());
+                params.push(data.by_ref().skip(1).collect::<String>());
             } else {
-                params.push(
-                    self.data
-                        .by_ref()
-                        .take_while(|c| *c != ' ')
-                        .collect::<String>(),
-                );
+                params.push(data.by_ref().take_while(|c| *c != ' ').collect::<String>());
             }
         }
 
