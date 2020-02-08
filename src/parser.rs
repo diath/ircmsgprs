@@ -120,13 +120,8 @@ impl<'a> Parser<'a> {
 
     fn parse_params(&mut self) -> Vec<String> {
         let mut params = Vec::new();
-        loop {
-            let chr = self.data.peek();
-            if chr == None {
-                break;
-            }
-
-            if *chr.unwrap() == ':' {
+        while let Some(chr) = self.data.peek() {
+            if *chr == ':' {
                 params.push(self.data.by_ref().skip(1).collect::<String>());
             } else {
                 params.push(
