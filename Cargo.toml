@@ -5,5 +5,8 @@ version = "0.2.0"
 authors = ["Kamil Chojnowski <Y29udGFjdEBkaWF0aC5uZXQ=>"]
 edition = "2018"
 repository = "https://github.com/diath/ircmsgprs"
+homepage = "https://github.com/diath/ircmsgprs"
 keywords = ["irc", "parser"]
+categories = ["parser-implementations"]
 license = "MIT"
+readme = "README.md"
