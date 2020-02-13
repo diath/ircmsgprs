@@ -77,7 +77,12 @@ impl Parser {
             return None;
         }
 
-        message.params = self.parse_params(&mut data);
+        if let Some(params) = self.parse_params(&mut data) {
+            message.params = params;
+        } else {
+            return None;
+        }
+
         Some(message)
     }
 
@@ -108,7 +113,7 @@ impl Parser {
         }
     }
 
-    fn parse_params(&mut self, data: &mut Peekable<Chars>) -> Vec<String> {
+    fn parse_params(&mut self, data: &mut Peekable<Chars>) -> Option<Vec<String>> {
         let mut params = Vec::new();
         while let Some(chr) = data.peek() {
             if *chr == ':' {
@@ -116,8 +121,12 @@ impl Parser {
             } else {
                 params.push(data.by_ref().take_while(|c| *c != ' ').collect::<String>());
             }
+
+            if params.len() > 15 {
+                return None;
+            }
         }
 
-        return params;
+        return Some(params);
     }
 }

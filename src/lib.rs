@@ -43,14 +43,14 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_command_short_numeric() {
+    fn test_parse_command_too_short_numeric() {
         let mut parser = parser::Parser::new();
         let result = parser.parse(":nick@host 33");
         assert_eq!(result.is_none(), true);
     }
 
     #[test]
-    fn test_parse_command_long_numeric() {
+    fn test_parse_command_too_long_numeric() {
         let mut parser = parser::Parser::new();
         let result = parser.parse(":nick@host 3333");
         assert_eq!(result.is_none(), true);
@@ -67,5 +67,12 @@ mod tests {
         assert_eq!(iter.next(), Some(&"param1".to_string()));
         assert_eq!(iter.next(), Some(&"param2".to_string()));
         assert_eq!(iter.next(), Some(&"trailing param with spaces".to_string()));
+    }
+
+    #[test]
+    fn test_parse_too_many_params() {
+        let mut parser = parser::Parser::new();
+        let result = parser.parse(":nick@host CMD 0 1 2 3 4 5 6 7 8 9 a b c d e f");
+        assert_eq!(result.is_none(), true);
     }
 }
