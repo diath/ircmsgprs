@@ -46,7 +46,12 @@ impl Parser {
     }
 
     pub fn parse<T: AsRef<str>>(&mut self, line: T) -> Option<Message> {
-        let mut data = line.as_ref().trim_end_matches("\r\n").chars().peekable();
+        let data = line.as_ref().trim_end_matches("\r\n");
+        if data.len() > 510 {
+            return None;
+        }
+
+        let mut data = data.chars().peekable();
         let mut message = Message {
             ..Default::default()
         };
