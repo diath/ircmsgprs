@@ -75,4 +75,11 @@ mod tests {
         let result = parser.parse(":nick@host CMD 0 1 2 3 4 5 6 7 8 9 a b c d e f");
         assert_eq!(result.is_none(), true);
     }
+
+    #[test]
+    fn test_parse_input_too_long() {
+        let mut parser = parser::Parser::new();
+        let result = parser.parse("f".repeat(511).to_string());
+        assert_eq!(result.is_none(), true);
+    }
 }
